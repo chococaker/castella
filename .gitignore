@@ -1,0 +1,60 @@
+# ---- Build directories ----
+build/
+out/
+dist/
+
+# ---- CMake generated files ----
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+Testing/
+
+# ---- Ninja ----
+.ninja_deps
+.ninja_log
+rules.ninja
+build.ninja
+
+# ---- Visual Studio Code ----
+.vscode/
+# Uncomment if you want to ignore workspace files:
+#.code-workspace
+
+# ---- CLion / JetBrains ----
+.idea/
+cmake-build-debug/
+cmake-build-release/
+cmake-build-relwithdebinfo/
+
+# ---- Compiled binaries ----
+*.exe
+*.dll
+*.so
+*.dylib
+*.obj
+*.o
+*.a
+*.lib
+*.exp
+*.pdb
+
+# ---- Generated precompiled headers ----
+*.gch
+*.pch
+
+# ---- Logs & temp ----
+*.log
+*.tmp
+*.cache
+
+# ---- OS-specific ----
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
