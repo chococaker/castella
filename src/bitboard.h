@@ -1,5 +1,6 @@
 #pragma once
 
+#include <bit>
 #include <cstdint>
 #include <sstream>
 
@@ -213,37 +214,13 @@ constexpr bool Bitboard::empty() const {
 }
 
 constexpr uint8_t Bitboard::count() const {
-#if defined(__GNUC__) || defined(__clang__)
-    return static_cast<uint8_t>(__builtin_popcountll(value));
-#elif defined(_MSC_VER)
-    return static_cast<uint8_t>(__popcnt64(value));
-#else
-    uint64_t valCpy = value;
-    uint8_t count = 0;
-    while (valCpy > 0) {
-        valCpy &= (valCpy - 1);
-        count++;
-    }
-    return count;
-#endif
+    return std::popcount(value);
 }
 
 constexpr Position Bitboard::lsb() const {
     assert(value > 0);
 
-#if defined(__GNUC__) || defined(__clang__)
-    return Position(__builtin_ctzll(value));
-#elif defined(_MSC_VER)
-    return Position(__tzcnt_u64(value));
-#else
-    uint64_t valCpy = value;
-    Position pos = 0;
-    while ((valCpy & 1) == 0 && valCpy < 64) {
-        valCpy >>= 1;
-        pos++;
-    }
-    return Position(pos);
-#endif
+    return Position(std::countr_zero(value));
 }
 
 constexpr Bitboard Bitboard::lsbBB() const {
