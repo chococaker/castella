@@ -136,8 +136,6 @@ void UciInstance::go(const std::string& line) {
 }
 
 void UciInstance::eval() {
-    using namespace std::chrono_literals;
-
     std::cout << "res " << eval::staticEval(game) << std::endl;
 }
 
