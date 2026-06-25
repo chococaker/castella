@@ -14,7 +14,7 @@ A C++23 UCI-compatible chess engine.
   - Tapered Eval
   - Material & PST
 - Lazy SMP
-  - Thread Voting (not currently working)
+  - Thread Voting
 - LMR
 - Aspiration Windows
 - Extensions
