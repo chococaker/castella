@@ -18,7 +18,7 @@
   - Tapered Eval
   - Material & PST
 - Lazy SMP
-  - Thread Voting (not currently working)
+  - Thread Voting
 - LMR
 - Aspiration Windows
 - Extensions

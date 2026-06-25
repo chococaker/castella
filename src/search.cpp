@@ -9,33 +9,6 @@
 #include "uci.h"
 
 namespace choco {
-namespace {
-void getPv(MoveList& moveList, TT* tt, const Game& initialGame) {
-    Game pvGame = initialGame;
-
-    zobrist::ZobristKey currentHash = pvGame.getZKey();
-
-    TTEntry entry;
-
-    while (tt->lookup(currentHash, entry, 0) && entry.bestMove.isValid()) {
-        Move move = entry.bestMove.toMove(pvGame);
-        if (!move.isValid() || !isPseudoLegal(move, pvGame) ||
-            !pvGame.isLegal(move))
-            break;
-
-        pvGame.makeMove(move);
-
-        if (pvGame.isRepetition(3)) break;
-
-        moveList.push_back(move);
-
-        currentHash = pvGame.getZKey();
-    }
-}
-} // namespace
-
-constexpr int16_t MAX_DEPTH = 200;
-
 SearchThread::SearchThread(int id, TT* tt, const History& history,
                            std::atomic_bool* shouldStop)
     : id(id), mainThread(false), timeMgr(nullptr), shouldStop(shouldStop),
@@ -55,6 +28,8 @@ void SearchThread::startSearch() {
     currEval = 0;
     currDepth = 1;
     nodesSearched = 0;
+
+    std::fill_n(&pvTable[0][0], MAX_DEPTH * MAX_DEPTH, INVALID_MOVE);
 
     thread = std::thread([&] {
         root();
@@ -112,7 +87,11 @@ void SearchThread::root() {
         currDepth++;
 
         MoveList pv;
-        getPv(pv, tt, game);
+        pv.push_back(bestMove.value());
+        Move* movePtr = pvTable[0];
+        while (*++movePtr != INVALID_MOVE) {
+            pv.push_back(*movePtr);
+        }
 
         if (mainThread) {
             uciInfo(currDepth, currEval, nodesSearched, 0, pv);
@@ -152,7 +131,7 @@ int32_t SearchThread::aspLoop(int16_t depth, int32_t prevEval) {
             return 0;
         }
 
-        int32_t searchScore = search(depth, alpha, beta, 0);
+        int32_t searchScore = search(depth, alpha, beta, 0, 0);
 
         if (searchScore <= alpha) {
             alpha -= delta;
@@ -167,7 +146,7 @@ int32_t SearchThread::aspLoop(int16_t depth, int32_t prevEval) {
 }
 
 int32_t SearchThread::search(int16_t depth, int32_t alpha, int32_t beta,
-                             int16_t numExtensions) {
+                             int16_t numExtensions, int16_t plyFromRoot) {
     if (shouldStop->load()) return 0;
     if (mainThread && timeMgr->shouldStop()) {
         shouldStop->store(true);
@@ -232,7 +211,8 @@ int32_t SearchThread::search(int16_t depth, int32_t alpha, int32_t beta,
             depthToSearch++;
         }
 
-        int32_t score = -search(depthToSearch, -beta, -alpha, numExtensions);
+        int32_t score =
+            -search(depthToSearch, -beta, -alpha, numExtensions, plyFromRoot + 1);
 
         if (score >= eval::MATE_EVAL_THRESHOLD) {
             --score;
@@ -244,6 +224,21 @@ int32_t SearchThread::search(int16_t depth, int32_t alpha, int32_t beta,
             best = score;
             thisBestMove = move;
             if (score > alpha) alpha = score;
+
+            // copy pv
+            pvTable[plyFromRoot][0] = move;
+            Move* m = pvTable[plyFromRoot + 1];
+            int i;
+            // if there's a PV that's at MAX_DEPTH, womp womp
+            for (i = 0; i < MAX_DEPTH - 3; i++) {
+                pvTable[plyFromRoot][i + 1] = *m;
+                m++;
+                if (!m->isValid()) {
+                    break;
+                }
+            }
+            // add INVALID_MOVE after as a marker to stop reading PV
+            pvTable[plyFromRoot][i + 2] = INVALID_MOVE;
         }
 
         game.unmakeMove(unmakeMove);

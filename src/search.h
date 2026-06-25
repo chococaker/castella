@@ -9,6 +9,8 @@
 #include <thread>
 
 namespace choco {
+constexpr int16_t MAX_DEPTH = 200;
+
 class SearchThread {
   public:
     SearchThread(int id, TT* tt, const History& history,
@@ -41,7 +43,7 @@ class SearchThread {
     void root();
 
     int32_t aspLoop(int16_t depth, int32_t prevEval);
-    int32_t search(int16_t depth, int32_t alpha, int32_t beta, int16_t numExtensions);
+    int32_t search(int16_t depth, int32_t alpha, int32_t beta, int16_t numExtensions, int16_t plyFromRoot);
     int32_t quiesce(int32_t alpha, int32_t beta);
 
     int32_t getDrawEval(Color color) const;
@@ -60,6 +62,8 @@ class SearchThread {
 
     std::optional<Move> bestMove;
     int32_t currEval;
+
+    Move pvTable[MAX_DEPTH][MAX_DEPTH];
 
     int16_t currDepth;
 
