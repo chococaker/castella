@@ -23,10 +23,13 @@ class SearchThread {
      * @param shouldStop
      * @param timeMgr
      * @param threadVoteCallback What to call when the search is over
+     * @param totalNodesCallback A callback returning a sum of all the nodes
+     * searched by all the threads
      */
     SearchThread(int id, TT* tt, const History& history,
                  std::atomic_bool* shouldStop, TimeMgr* timeMgr,
-                 std::function<void()> threadVoteCallback);
+                 std::function<void()> threadVoteCallback,
+                 std::function<uint64_t()> totalNodesCallback);
 
     void startSearch();
 
@@ -38,6 +41,8 @@ class SearchThread {
     int32_t getCurrEval() const;
 
     int32_t getVoteValue(int32_t worstScore) const;
+
+    uint64_t getNodesSearched() const;
 
   private:
     void root();
@@ -74,6 +79,7 @@ class SearchThread {
     Color maximizingColor;
 
     std::function<void()> threadVoteCallback;
+    std::function<uint64_t()> totalNodesCallback;
 };
 
 class Search {

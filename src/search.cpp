@@ -17,11 +17,13 @@ SearchThread::SearchThread(int id, TT* tt, const History& history,
 
 SearchThread::SearchThread(int id, TT* tt, const History& history,
                            std::atomic_bool* shouldStop, TimeMgr* timeMgr,
-                           std::function<void()> threadVoteCallback)
+                           std::function<void()> threadVoteCallback,
+                           std::function<uint64_t()> totalNodesCallback)
     : id(id), mainThread(true), timeMgr(timeMgr), shouldStop(shouldStop),
       tt(tt), history(history), currEval(0), currDepth(0), nodesSearched(0),
       maximizingColor(Color::WHITE),
-      threadVoteCallback(std::move(threadVoteCallback)) {}
+      threadVoteCallback(std::move(threadVoteCallback)),
+      totalNodesCallback(std::move(totalNodesCallback)) {}
 
 void SearchThread::startSearch() {
     bestMove.reset();
@@ -67,6 +69,10 @@ int32_t SearchThread::getVoteValue(int32_t worstScore) const {
                                 : 0; // add 1 to outweigh unvoted moves
 }
 
+uint64_t SearchThread::getNodesSearched() const {
+    return nodesSearched;
+}
+
 void SearchThread::root() {
     MoveList moves;
     generateMoves<MoveType::LEGAL>(game, moves);
@@ -94,7 +100,7 @@ void SearchThread::root() {
         }
 
         if (mainThread) {
-            uciInfo(currDepth, currEval, nodesSearched,
+            uciInfo(currDepth, currEval, totalNodesCallback(),
                     timeMgr->elapsed().count(), pv);
 
             if (timeMgr->shouldStop()) {
@@ -365,9 +371,18 @@ void Search::setThreadCount(int count) {
 
     // main thread
     searchThreads.push_back(
-        new SearchThread(0, &tt, History(), &shouldStop, &timeMgr, [&] {
-            reportBestMove();
-        }));
+        new SearchThread(0, &tt, History(), &shouldStop, &timeMgr,
+            [&] {
+                reportBestMove();
+            },
+            [&] {
+                uint64_t sum = 0;
+                for (const SearchThread* st : searchThreads) {
+                    sum += st->getNodesSearched();
+                }
+                return sum;
+            }
+        ));
 
     for (int i = 1; i < count; i++) {
         searchThreads.push_back(
