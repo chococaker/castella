@@ -94,7 +94,8 @@ void SearchThread::root() {
         }
 
         if (mainThread) {
-            uciInfo(currDepth, currEval, nodesSearched, 0, pv);
+            uciInfo(currDepth, currEval, nodesSearched,
+                    timeMgr->elapsed().count(), pv);
 
             if (timeMgr->shouldStop()) {
                 shouldStop->store(true);
