@@ -34,3 +34,7 @@
 - [Chess Programming Wiki](https://www.chessprogramming.org/Main_Page), which introduced me to a lot of optimizations I wouldn't have found otherwise
 - [@ultraeon](https://github.com/ultraeon), who got into chess programming with me
 - [Sirius Chess Engine](https://github.com/mcthouacbb/Sirius), for being an amazing reference
+
+## Note About AI
+
+This engine is built with learning in mind. As such, there was and will be **no assistance** from AI agents or tools.
