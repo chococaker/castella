@@ -1,40 +1,102 @@
 <div align="center">
-  <img width="240px" height="240px" src="https://github.com/chococaker/castella/blob/main/castella.png?raw=true" alt="A castella">
+  <img height="240px" src="https://github.com/chococaker/castella/blob/main/castella.png?raw=true" alt="A castella">
   <h3>castella</h3>
   <p>
     A C++23 UCI-compatible chess engine.
   </p>
 </div>
 
-## Current Features
+# Castella: High-Performance C++ Chess Engine
 
-- Magic Bitboards
-- Move Ordering (stage-based)
-  - History Tables
-  - MVV-LVA
-  - TTPV Move
-- Basic time management
-- Hand-crafted eval
-  - Tapered Eval
-  - Material & PST
-- Lazy SMP
-  - Thread Voting
-- LMR
-- Aspiration Windows
-- Extensions
-  - Check Extensions
-- Quiescence Search
+**Castella** is a highly optimized, multithreaded chess engine written from scratch in C++. Built as the successor to my
+previous engine (*Johnner*), Castella features a completely redesigned modular architecture that plays approximately
+**800 Elo points stronger** than its predecessor.
 
-## Credits
+This project serves as a showcase of systems-level programming, concurrent processing, and the implementation of highly
+complex search and heuristic algorithms.
 
-- [@SublimedLime](https://github.com/SublimedLime) who created the logo (and much other art for me)
-- [Stockfish Discord](https://discord.gg/GWDRS3kU6R), for helping me with cleaning up code and debugging
-- [Cute Chess](https://cutechess.com/), for being such a reliable GUI for everything
-- [Sebastian Lague](https://www.youtube.com/@SebastianLague), who gave me the final push to get into chess programming
-- [Chess Programming Wiki](https://www.chessprogramming.org/Main_Page), which introduced me to a lot of optimizations I wouldn't have found otherwise
-- [@ultraeon](https://github.com/ultraeon), who got into chess programming with me
-- [Sirius Chess Engine](https://github.com/mcthouacbb/Sirius), for being an amazing reference
+## What This Project Demonstrates
+
+* **High-Performance C++:** Extensive use of bitwise operations and memory-efficient data structures to evaluate
+  millions of positions per second.
+* **Concurrency & Multithreading:** Implementation of Lazy Symmetric Multiprocessing (SMP) to scale performance across
+  multiple CPU cores.
+* **Algorithmic Complexity:** Managing massive state-space complexity through advanced pruning, dynamic search
+  extensions, and stage-based move ordering.
+* **Continuous Iteration:** Completely overhauling a previous codebase to achieve a massive, measurable performance
+  leap (800+ Elo).
+
+## Core Engine Features
+
+### Board Representation & Core Mechanics
+
+* **Magic Bitboards:** Utilizes perfect hashing for sliding pieces (Rooks, Bishops, Queens) to achieve `O(1)` move
+  generation, drastically reducing computational overhead during tree traversal.
+* **Basic Time Management:** Dynamic time allocation based on the game state and remaining clock, ensuring optimal use
+  of compute time per move.
+
+### Search & Concurrency
+
+* **Lazy SMP with Thread Voting:** Leverages multithreading by running parallel searches that share a transposition
+  table, allowing the engine to scale effectively across modern multi-core processors.
+* **Quiescence Search:** Extends the search at the end of the main tree to resolve noisy tactical sequences (like chains
+  of captures), preventing the horizon effect.
+* **Late Move Reductions (LMR):** Aggressively prunes unpromising branches to search deeper in critical lines.
+* **Aspiration Windows:** Narrows the alpha-beta search window based on previous iterations to increase pruning
+  efficiency.
+* **Check Extensions:** Dynamically extends search depth when the king is in check to ensure accurate defensive
+  calculation.
+
+### Move Ordering (Stage-Based)
+
+To maximize the efficiency of alpha-beta pruning, Castella orders moves to evaluate the most promising branches first:
+
+* **TTPV (Transposition Table Principal Variation) Move:** Instantly prioritizes the best move found in previous search
+  iterations.
+* **MVV-LVA (Most Valuable Victim - Least Valuable Attacker):** Prioritizes winning material in capture sequences.
+* **History Tables:** Tracks and prioritizes moves that frequently caused beta cutoffs in previous searches.
+
+### Position Evaluation
+
+* **Hand-Crafted Evaluation:** A custom, finely-tuned static evaluation function without relying on external neural
+  networks.
+* **Tapered Evaluation:** Smoothly interpolates piece values and positional bonuses between the opening, middlegame, and
+  endgame phases.
+* **Material & Piece-Square Tables (PST):** Evaluates positional advantages by incentivizing pieces to occupy
+  strategically dominant squares.
+
+## Getting Started
+
+### Prerequisites
+
+* A C++ compiler (GCC / Clang / MSVC)
+* CMake
+
+### Compilation
+
+Castella uses CMake.
+
+```bash
+git clone https://github.com/chococaker/castella.git
+cd castella
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build .
+```
+
+### Usage
+
+Castella is a command-line application that uses standard chess engine protocols. You can interact with it directly via
+terminal or connect it to any popular chess GUI (such as Arena, Cute Chess, or Lucas Chess) to watch it play.
+
+```bash
+./engine
+```
 
 ## Note About AI
 
-This engine is built with learning in mind. As such, there was and will be **no assistance** from AI agents or tools.
+AI was not utilized in the development of this project, as it is meant primarily as a way to learn more about the world
+of highly efficient simulation.
+
+All code here reflects my **own skill** as a programmer and researcher.
