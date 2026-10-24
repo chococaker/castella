@@ -136,6 +136,7 @@ Bitboard attacks(Position pos, Bitboard occupied) {
 
     default:
         assert(0);
+        return BB_EMPTY;
     }
 }
 
@@ -154,6 +155,7 @@ Bitboard attacks(Piece piece, Position pos, Bitboard occupied) {
 
     default:
         assert(0);
+        return BB_EMPTY;
     }
 }
 

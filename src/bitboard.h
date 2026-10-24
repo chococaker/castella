@@ -126,6 +126,7 @@ constexpr Bitboard Bitboard::rankOf(uint8_t rank) {
         return BB_RANK_8;
     default:
         assert(0);
+        return BB_EMPTY;
     }
 }
 
@@ -149,6 +150,7 @@ constexpr Bitboard Bitboard::fileOf(uint8_t file) {
         return BB_FILE_H;
     default:
         assert(0);
+        return BB_EMPTY;
     }
 }
 

@@ -32,13 +32,11 @@ struct CastlingRights {
 
     // retrieves squares that are not allowed to be attacked when castling
     // occurs.
-    static Bitboard getKingThruSquares(Color color,
-                                                 CastlingSide side);
+    static Bitboard getKingThruSquares(Color color, CastlingSide side);
 
     // retrieves squares that are not allowed to be occupied when castling
     // occurs.
-    static Bitboard getRookThruSquares(Color color,
-                                                 CastlingSide side);
+    static Bitboard getRookThruSquares(Color color, CastlingSide side);
 
     static constexpr std::optional<CastlingSide>
     getCastlingSide(Position from, Position to, Color color);
@@ -236,14 +234,15 @@ constexpr uint8_t CastlingRights::getData() const {
     return data;
 }
 
-Position CastlingRights::getCastlingPosition(Color color, CastlingSide side) {
+inline Position CastlingRights::getCastlingPosition(Color color,
+                                                    CastlingSide side) {
     constexpr static Position CASTLING_MOVEMENTS[] = {G1, C1, G8, C8};
 
     return CASTLING_MOVEMENTS[static_cast<uint8_t>(side) +
                               static_cast<uint8_t>(color) * 2];
 }
 
-std::pair<Position, Position>
+inline std::pair<Position, Position>
 CastlingRights::getRookMovement(Color color, CastlingSide side) {
     constexpr static std::pair<Position, Position> ROOK_MOVEMENTS[] = {
         {H1, F1}, {A1, D1}, {H8, F8}, {A8, D8}};
@@ -253,7 +252,7 @@ CastlingRights::getRookMovement(Color color, CastlingSide side) {
 }
 
 inline Bitboard CastlingRights::getKingThruSquares(Color color,
-                                                      CastlingSide side) {
+                                                   CastlingSide side) {
     constexpr static Bitboard KING_THRU_SQUARES[] = {
         Bitboard::fromPos(E1) | Bitboard::fromPos(F1) | Bitboard::fromPos(G1),
         Bitboard::fromPos(E1) | Bitboard::fromPos(D1) | Bitboard::fromPos(C1),
@@ -265,7 +264,7 @@ inline Bitboard CastlingRights::getKingThruSquares(Color color,
 }
 
 inline Bitboard CastlingRights::getRookThruSquares(Color color,
-                                                      CastlingSide side) {
+                                                   CastlingSide side) {
     constexpr static Bitboard ROOK_THRU_SQUARES[] = {
         Bitboard::fromPos(F1) | Bitboard::fromPos(G1),
         Bitboard::fromPos(D1) | Bitboard::fromPos(C1) | Bitboard::fromPos(B1),

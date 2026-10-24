@@ -159,6 +159,8 @@ const Move& MoveOrder::selectMove() {
     }
 
     assert(0);
+
+    return INVALID_MOVE;
 }
 
 void MoveOrder::nextStage() {

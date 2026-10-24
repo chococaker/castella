@@ -20,7 +20,5 @@ target_include_directories(core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -DNDEBUG")
 
-set(CMAKE_CXX_FLAGS_DEBUG "-g")
-
 add_executable(engine main.cpp)
 target_link_libraries(engine PRIVATE core)
