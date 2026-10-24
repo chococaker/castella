@@ -4,9 +4,12 @@
   <p>
     A C++23 UCI-compatible chess engine.
   </p>
+  <p>
+    <i>&ldquo;Why in the world did you name your chess engine after a sponge cake?!&rdquo;</i>
+    <br>
+    <i>&ldquo;<a href="https://www.costco.com/p/-/castella-original-japanese-style-baked-sponge-cake/100770482">https://www.costco.com/p/-/castella-original-japanese-style-baked-sponge-cake/100770482</a>&rdquo;</i>
+  </p>
 </div>
-
-# Castella: High-Performance C++ Chess Engine
 
 **Castella** is a highly optimized, multithreaded chess engine written from scratch in C++. Built as the successor to my
 previous engine (*Johnner*), Castella features a completely redesigned modular architecture that plays approximately
@@ -21,10 +24,9 @@ complex search and heuristic algorithms.
   millions of positions per second.
 * **Concurrency & Multithreading:** Implementation of Lazy Symmetric Multiprocessing (SMP) to scale performance across
   multiple CPU cores.
-* **Algorithmic Complexity:** Managing massive state-space complexity through advanced pruning, dynamic search
-  extensions, and stage-based move ordering.
-* **Continuous Iteration:** Completely overhauling a previous codebase to achieve a massive, measurable performance
-  leap (800+ Elo).
+* **Performance Sampling:** Using profilers to accurately identify potential optimization spots with flame-graphs and
+  collection logs
+* **Defensive Programming:** Utilization of Catch2, perft and assertions to catch bugs early
 
 ## Core Engine Features
 
