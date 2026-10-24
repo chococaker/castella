@@ -24,21 +24,20 @@ struct CastlingRights {
 
     constexpr uint8_t getData() const;
 
-    static constexpr Position getCastlingPosition(Color color,
-                                                  CastlingSide side);
+    static Position getCastlingPosition(Color color, CastlingSide side);
 
     // retrieves the from and to of a rook when a king castles
-    static constexpr std::pair<Position, Position>
-    getRookMovement(Color color, CastlingSide side);
+    static std::pair<Position, Position> getRookMovement(Color color,
+                                                         CastlingSide side);
 
     // retrieves squares that are not allowed to be attacked when castling
     // occurs.
-    static constexpr Bitboard getKingThruSquares(Color color,
+    static Bitboard getKingThruSquares(Color color,
                                                  CastlingSide side);
 
     // retrieves squares that are not allowed to be occupied when castling
     // occurs.
-    static constexpr Bitboard getRookThruSquares(Color color,
+    static Bitboard getRookThruSquares(Color color,
                                                  CastlingSide side);
 
     static constexpr std::optional<CastlingSide>
@@ -237,15 +236,14 @@ constexpr uint8_t CastlingRights::getData() const {
     return data;
 }
 
-constexpr Position CastlingRights::getCastlingPosition(Color color,
-                                                       CastlingSide side) {
+Position CastlingRights::getCastlingPosition(Color color, CastlingSide side) {
     constexpr static Position CASTLING_MOVEMENTS[] = {G1, C1, G8, C8};
 
     return CASTLING_MOVEMENTS[static_cast<uint8_t>(side) +
                               static_cast<uint8_t>(color) * 2];
 }
 
-constexpr std::pair<Position, Position>
+std::pair<Position, Position>
 CastlingRights::getRookMovement(Color color, CastlingSide side) {
     constexpr static std::pair<Position, Position> ROOK_MOVEMENTS[] = {
         {H1, F1}, {A1, D1}, {H8, F8}, {A8, D8}};
@@ -254,7 +252,7 @@ CastlingRights::getRookMovement(Color color, CastlingSide side) {
                           static_cast<uint8_t>(color) * 2];
 }
 
-constexpr Bitboard CastlingRights::getKingThruSquares(Color color,
+inline Bitboard CastlingRights::getKingThruSquares(Color color,
                                                       CastlingSide side) {
     constexpr static Bitboard KING_THRU_SQUARES[] = {
         Bitboard::fromPos(E1) | Bitboard::fromPos(F1) | Bitboard::fromPos(G1),
@@ -266,7 +264,7 @@ constexpr Bitboard CastlingRights::getKingThruSquares(Color color,
                              static_cast<uint8_t>(color) * 2];
 }
 
-constexpr Bitboard CastlingRights::getRookThruSquares(Color color,
+inline Bitboard CastlingRights::getRookThruSquares(Color color,
                                                       CastlingSide side) {
     constexpr static Bitboard ROOK_THRU_SQUARES[] = {
         Bitboard::fromPos(F1) | Bitboard::fromPos(G1),
