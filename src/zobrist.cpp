@@ -37,10 +37,14 @@ constexpr ZobristKeys genZKeys() {
 
     XorShift64Star rand {SEED};
 
-    for (auto& color : zkeys.pieces)
-        for (auto& piece : color)
-            for (uint64_t& square : piece)
-                square = rand.next();
+    // Workaround for MSVC constexpr range-based for loop bug
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 6; j++) {
+            for (int k = 0; k < 64; k++) {
+                zkeys.pieces[i][j][k] = rand.next();
+            }
+        }
+    }
 
     for (uint64_t& castlingRight : zkeys.castlingRights)
         castlingRight = rand.next();
